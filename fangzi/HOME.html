@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--<link rel="stylesheet" href="font/iconfont.css">-->
+    <style>
+        html,body{
+            width:100%;
+            height:100%;
+            margin:0px;
+            padding:0px;
+        }
+        .sence{
+            width:100%;
+            height:100%;
+            position:fixed;
+            top:0px;
+            left:0px;
+            margin:auto;
+            perspective:300px;
+        }
+        .room{
+            width:100%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            left:0px;
+            transform-style:preserve-3d;
+            backface-visibility: visible;
+
+        }
+        .room .panel{
+            width:100%;
+            height:100%;
+            position:absolute;
+            top:0px;
+            left:0px;
+            transform-style:preserve-3d;
+            backface-visibility: visible;
+        }
+        .room .panel:first-child{
+            background:#ccc;
+           transform-origin: left;
+           transform: rotateY(-90deg);
+            box-shadow: 0 0 100px #000 inset;
+        }
+        .room .panel:nth-child(2){
+            background:#ccc;
+            transform-origin: right;
+            transform: rotateY(90deg);
+            box-shadow: 0 0 100px #000 inset;
+        }
+        .room .panel:nth-child(3){
+            background:url(img/h5.jpg) center;
+            background-size: cover;
+            box-shadow: 0 0 100px #000 inset;
+        }
+        .room .panel:nth-child(4){
+            background:url(img/tianhua.jpg);
+            background-size:200px 200px;
+            transform-origin:top;
+            transform: rotateX(90deg);
+            box-shadow: 0 0 100px #000 inset;
+        }
+        .room .panel:nth-child(5){
+            background:url(img/diban.jpg) ;
+            transform-origin:bottom;
+            transform:rotateX(-90deg);
+            box-shadow: 0 0 100px #000 inset;
+        }
+        .room .panel:last-child{
+            background:#ccc url(img/chuanghu.jpg) no-repeat center;
+            box-shadow: 0 0 100px #000 inset;
+        }
+
+        @font-face {font-family: "iconfont";
+            src: url('font/iconfont.eot?t=1479315046647'); /* IE9*/
+            src: url('font/iconfont.eot?t=1479315046647#iefix') format('embedded-opentype'), /* IE6-IE8 */
+            url('font/iconfont.woff?t=1479315046647') format('woff'), /* chrome, firefox */
+            url('font/iconfont.ttf?t=1479315046647') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+            url('font/iconfont.svg?t=1479315046647#iconfont') format('svg'); /* iOS 4.1- */
+        }
+
+        .iconfont {
+            font-family:"iconfont" !important;
+            font-size:16px;
+            font-style:normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .icon-git:before { content: "\e6ff"; }
+
+         .icon-nodejsicon:before { content: "\e605"; }
+
+        .icon-js:before { content: "\e603"; }
+
+         .icon-html5:before { content: "\e604"; }
+
+        .icon-php:before { content: "\e609"; }
+
+       
+
+       .icon-slice1:before { content: "\e607"; }
+
+        .icon-mysqlin:before { content: "\e619"; }
+        .icon-svn:before { content: "\e79b"; }
+            .iconfont{
+              background:#999;
+                width:150px;
+                height:150px;
+                float:left;
+                color:red;
+                font-size:100px;
+                line-height: 150px;
+                text-align: center;
+                margin-left:170px;
+                margin-top:200px;
+                transform: rotate3d(0,1,0,180deg);
+            }
+    </style>
+    <script>
+        window.onload=function(){
+        var cliw=document.documentElement.clientWidth;
+        var clih=document.documentElement.clientHeight;
+        var sence=document.querySelector(".sence");
+        var room=document.querySelector(".room");
+        var lastpanel=document.querySelector(".panel:nth-child(3)");
+        var floor=document.querySelector(".panel:nth-child(4)");
+        var ceil=document.querySelector(".panel:nth-child(5)");
+        var panel=document.querySelectorAll(".panel");
+           lastpanel.style.transform="translate3d(0,0,"+cliw+"px)";
+           floor.style.width=floor.style.height=ceil.style.width=ceil.style.height=cliw+"px";
+            ceil.style.top=-(cliw-clih)+"px";
+            var last=document.querySelector(".panel:last-child");
+            room.style.transformOrigin="center center "+(cliw/2)+"px";
+            room.style.transform="rotate3d(0,1,0,-180deg)";
+            var flog2=true;
+            lastpanel.onclick=function(){
+                if(flog2){
+                room.style.transition="transform 2s ease";
+                room.style.transform="translate3d(0,0,"+(-clih/2)+"px) rotate3d(0,1,0,0deg)";
+                    flog2=false;
+                }
+            }
+            var angle1=0;
+            var angle=0;
+            var flag1=true;
+            document.onmousedown=function(e){
+                flag1=false;
+                var dw= e.clientX;
+                var dh= e.clientY;
+                document.onmousemove=function(e){
+                    flag1=true;
+                    room.style.transition="none";
+                    var movex= e.clientX;
+                    var movey= e.clientY;
+                    angle=Math.abs(movex-dw)> Math.abs(movey-dh)?(movex-dw):(movey-dh);
+                    e.preventDefault();
+                    if(!flag){
+                        room.style.transform="translate3d(0,0,30px) rotate3d(0,1,0,"+(angle1+angle)+"deg)";
+                    }else{
+                            room.style.transform="translate3d(0,0,"+(-clih/2)+"px) rotate3d(0,1,0,"+(angle1+angle)+"deg)";
+                    }
+
+                }
+                document.onmouseup=function(){
+                    if(flag1){
+                    angle1+=angle;
+                        flag1=true;
+                    }
+                    document.onmousemove=null;
+                    document.onmouseup=null;
+                }
+        }
+           var flag=true;
+            for(var i=0;i<panel.length;i++){
+                panel[i].ondblclick=function(){
+                room.style.transition="transform 2s ease";
+                        if(flag){
+                        room.style.transform="translate3d(0,0,30px) rotate3d(0,1,0,"+(angle1)+"deg)";
+                            flag=false;
+                        }else{
+                        room.style.transform="translate3d(0,0,"+(-clih/2)+"px) rotate3d(0,1,0,"+(angle1)+"deg)";
+                            flag=true;
+                        }
+                    }
+
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="sence">
+    <div class="room">
+        <div class="panel">
+          <div class="iconfont icon-git"></div>
+           <div class="iconfont icon-html5"></div>
+          <div class="iconfont icon-js"></div>
+           <div class="iconfont icon-mysqlin"></div>
+          
+        </div>
+        <div class="panel">
+            <div class="iconfont icon-php"></div>
+           
+            <div class="iconfont icon-nodejsicon"></div>
+             <div class="iconfont icon-slice1"></div>
+            <div class="iconfont icon-svn"></div>
+        </div>
+        <div class="panel"></div>
+        <div class="panel"></div>
+        <div class="panel"></div>
+        <div class="panel"></div>
+    </div>
+</div>
+</body>
+</html>
