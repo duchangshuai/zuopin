@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>打字游戏</title>
+	<script src="function.js"></script>
+</head>
+<style>
+	body{
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		overflow: hidden;
+		color:green;
+		background: black;
+		font-size: 24px;
+
+	}
+	.box{
+		width: 100%;
+		height: 50px;
+		background: plum;
+		position: fixed;
+		left: 0;
+		bottom:0;
+	}
+	.box div{
+		width: 33.3333%;
+		height: 100%;
+		float: left;
+		text-align: center;
+		line-height: 50px;
+	}
+	.box span{
+		color: red;
+	}
+	span{
+		width: 50px;
+		height: 50px;
+		border-radius: 10px;
+		text-align: center;
+		line-height: 50px;
+		background: plum;
+		background-image: url(mofa.png);
+		background-position: center center;
+	}
+	img{
+		width: 100%;
+		height: 100%;
+	}
+    .dao{
+        width:161px;
+        height: 176px;
+        float: left;
+        position: absolute;
+        left: 600px;
+        top:200px;
+    }
+    .dao img{
+        float: left;
+    }
+
+</style>
+<body>
+	
+	<div class="box">
+		<div class="grup">关卡：<span>1</span></div>
+		<div class="life">生命值：<span>5</span></div>
+		<div class="grade">分值：<span>0</span></div>
+	</div>
+    <div class="dao">
+        <img src="dao.gif" alt="">
+    </div>
+	<img src="beijing.jpg" alt="">
+</body>
+<script>
+	var letterArr=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+    var newletter=[];
+    var t;
+    
+    var grup=$("span",$(".grup")[0])[0];
+    var life=$("span",$(".life")[0])[0];
+    var grade=$("span",$(".grade")[0])[0];
+    var grupnum=1;
+    var lifenum=5;
+    var gradenum=0;
+
+
+
+	function getletter(num){
+		var newarr=[];
+		for (var i = 0; i < num; i++) {
+			var letter=letterArr[Math.floor(Math.random()*letterArr.length)];
+			while(checkRepeat(letter,newletter)){
+				letter=letterArr[Math.floor(Math.random()*letterArr.length)];
+			}
+            newletter.push(letter);
+            newarr.push(letter);
+		};
+
+        return newarr; 
+	}
+
+  
+	function checkRepeat(val,arr){
+        for(var i in arr){
+        	if(val==arr[i]){
+        		return true;
+        	}
+        }
+        return false;
+	}
+
+    getletter(5);
+    console.log(newletter);
+
+
+    //创建容器获取字母
+     var newspan=[];
+     var cw=document.documentElement.clientWidth;
+     var ch=document.documentElement.clientHeight;
+    function createSpan(arr){
+    	    for (var i = 0; i < arr.length; i++) {
+    	    	var span=document.createElement("span");
+	            
+	            var lefts=100+Math.random()*(cw-200);
+	            var tops=Math.random()*100;
+	            while(checkPosition(lefts,newspan)){
+	            	lefts=100+Math.random()*(cw-200);
+
+	            }
+                span.innerHTML=arr[i];
+                span.lefts=lefts;
+	            span.style.cssText="position:absolute;left:"+lefts+"px;top:"+tops+"px";
+	            document.body.appendChild(span);
+	             
+	            newspan.push(span);
+	           
+    	    };
+            
+    }
+
+    function checkPosition(val,arr){
+         for(var i in arr){
+         	
+         	if(val>=(arr[i].lefts-40)&&val<=(arr[i].lefts+40)){
+         		return true;
+         	}
+         }
+         return false;
+    }
+    createSpan(newletter);
+
+
+    //让字母动起来
+
+    function move(){
+    	t=setInterval(function(){
+    		for (var i = 0; i < newspan.length; i++) {
+    			newspan[i].style.top=newspan[i].offsetTop+5+"px";
+    			if(newspan[i].offsetTop>=(ch-100)){
+    				document.body.removeChild(newspan[i]);
+    				newspan.splice(i,1);
+    				newletter.splice(i,1);
+    				
+    				createSpan(getletter(1));
+                    
+                    lifenum--;
+                    life.innerHTML=lifenum;
+                    if(lifenum==0){
+                    	alert("闯关失败");
+                    	clearInterval(t);
+                        lifenum=5;
+                        life.innerHTML=5;
+                    	newletter=[];
+                    	for (var i = 0; i < newspan.length; i++) {
+                    		document.body.removeChild(newspan[i]);
+                    	};
+                    	newspan=[];
+                    	newarr=[];
+                    	createSpan(getletter(num));
+                    	move();
+                    }
+                    
+
+
+
+    			}
+    			
+
+    		};
+    	},100)
+
+    }
+    move();
+
+     var num=5;
+    function keyup(){
+    	document.onkeyup=function(e){
+    		var e=e||window.event;
+    		var aa=String.fromCharCode(e.keyCode);
+    		for (var i = 0; i < newspan.length; i++) {
+    			if(newspan[i].innerHTML==aa){
+    				document.body.removeChild(newspan[i]);
+    				newspan.splice(i,1);
+    				newletter.splice(i,1);
+                    createSpan(getletter(1));
+
+                    gradenum++;
+                    grade.innerHTML=gradenum;
+                    if(gradenum>=3){
+                    	grupnum++;
+                    	alert("恭喜你闯关成功");
+                    	clearInterval(t);
+                    	grade.innerHTML=0;
+                    	grup.innerHTML=grupnum;
+                    	gradenum=0;
+                    	newletter=[];
+                    	for (var i = 0; i < newspan.length; i++) {
+                    		document.body.removeChild(newspan[i]);
+                    	};
+                    	newarr=[];
+                    	newspan=[];
+                         num+=1;
+                    	createSpan(getletter(num));
+                    	move();
+                    }
+
+    			}
+    		};
+    	}
+    }
+
+    keyup();
+
+    //关卡设置
+
+
+
+
+
+</script>
+</html>
